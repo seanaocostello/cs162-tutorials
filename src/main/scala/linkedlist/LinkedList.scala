@@ -58,29 +58,29 @@ sealed trait LinkedList[T] {
 // A non-empty implementation of LinkedList[T].
 // Hint: only one method implementation in this class isn't a one-liner.
 case class Node[T](value: T, rest: LinkedList[T]) extends LinkedList[T] {
-  def head: T = ???
+  def head: T = value
 
-  def safeHead: Option[T] = ???
+  def safeHead: Option[T] = Some(value)
 
-  def tail: LinkedList[T] = ???
+  def tail: LinkedList[T] = rest
 
-  def length: Int = ???
+  def length: Int = 1 + rest.length
 
-  def take(n: Int): LinkedList[T] = ???
+  def take(n: Int): LinkedList[T] = if(n > 0){Node(value, rest.take(n-1))} else{Empty()}
 
-  def drop(n: Int): LinkedList[T] = ???
+  def drop(n: Int): LinkedList[T] = if(n == 1){rest} else {rest.drop(n-1)}
 
-  def map[U](fn: T => U): LinkedList[U] = ???
+  def map[U](fn: T => U): LinkedList[U] = Node(fn(value), rest.map[U](fn))
 
-  def flatMap[U](fn: T => LinkedList[U]): LinkedList[U] = ???
+  def flatMap[U](fn: T => LinkedList[U]): LinkedList[U] = fn(value).append(rest.flatMap(fn))
 
-  def filter(pred: T => Boolean): LinkedList[T] = ???
+  def filter(pred: T => Boolean): LinkedList[T] = if (pred(value)) { Node(value, rest.filter(pred))} else { rest.filter(pred) }
 
-  def append(other: LinkedList[T]): LinkedList[T] = ???
+  def append(other: LinkedList[T]): LinkedList[T] = if (rest == Empty()) {Node(value, rest.append(other))} else {Node(value, rest.append(other))}
 
-  def foldLeft[U](start: U)(fn: (U, T) => U): U = ???
+  def foldLeft[U](start: U)(fn: (U, T) => U): U = rest.foldLeft(fn(start, value))(fn)
 
-  def foldRight[U](start: U)(fn: (T, U) => U): U = ???
+  def foldRight[U](start: U)(fn: (T, U) => U): U = fn(value, rest.foldRight(start)(fn))
 }
 
 // An empty implementation of LinkedList[T]
